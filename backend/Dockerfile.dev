@@ -1,0 +1,32 @@
+# Dockerfile.dev
+FROM node:18-alpine
+
+# Set app directoryf
+WORKDIR /app
+
+# Set memory limit
+ENV NODE_OPTIONS=--max_old_space_size=4096
+
+# Install dependencies
+COPY package.json ./
+COPY sync-package-lock ./
+RUN npm install
+
+# Copy config files
+COPY tsconfig.json ./
+COPY nodemon.json ./
+
+# Copy source code and knex config
+COPY src ./src
+COPY database ./database
+
+# Build the app
+RUN npm run build
+
+# Copy entrypoint
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD ["npm", "run", "serve"]

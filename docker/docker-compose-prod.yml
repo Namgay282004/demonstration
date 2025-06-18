@@ -1,0 +1,71 @@
+version: '3.4'
+services:
+  database:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: db
+      # Use your own credentials for production
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: psswd
+      # PGDATA: /data/postgres
+    volumes:
+      # Where our data will be persisted
+      - database-data:/data/postgres
+    ports:
+      # <Port exposed> : <Port running inside container>
+      - "2345:5432"
+    expose:
+      # Opens port 2345 on the container
+      - '2345'
+  backend:
+    depends_on:
+      - database
+    restart: unless-stopped
+    # Use the desired image defined at "pull-and-restart.sh"
+    # Example: localhost:5000/raspberry-repository/pern-app-backend:develop-arm64v8
+    image: ${registry}/${repository}/${app}-backend:${version}-${platform_tag}
+    working_dir: /app
+    environment:
+        # Depends on 'database' docker service configuration
+        DATABASE_HOST: 'database' # Docker service called 'database'
+        DATABASE_NAME: 'db'
+        # Use your own credentials for production
+        DATABASE_USER: 'admin'
+        DATABASE_PASSWORD: 'psswd'
+        DATABASE_PORT: '5432'
+        NODE_ENV: production
+        # Use your own secrets for production
+        JWT_SECRET: 87e3459aec28ec448228d4f990e80f14657daefc7f01a7146e1149663b30719d
+        REFRESH_JWT_SECRET: 6c2723ab022250723988e5cf38e90908be10e82ee2ce802747d279f4dd7bc823
+    volumes:
+        - "../backend/public:/app/public"
+        - "backend-uploads:/app/uploads"
+    ports:
+        - "3000:3000"
+    command: "npm run serve"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+  frontend:
+    depends_on:
+      - backend
+    restart: unless-stopped
+    # Use the desired image defined at "pull-and-restart.sh"
+    # Example: localhost:5000/raspberry-repository/pern-app-frontend:develop-arm64v8
+    image: ${registry}/${repository}/${app}-frontend:${version}-${platform_tag}
+    working_dir: /app
+    environment:
+        NODE_ENV: production
+    ports:
+        - "80:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+volumes:
+  database-data:
+  backend-uploads:

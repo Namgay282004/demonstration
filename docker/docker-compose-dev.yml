@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: chimigyeltshen_user
+      POSTGRES_PASSWORD: sa7bbrmdw3oRnEj4a1Vqbs89PeH03oE2
+      POSTGRES_DB: chimigyeltshen
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      DATABASE_URL: postgresql://chimigyeltshen_user:sa7bbrmdw3oRnEj4a1Vqbs89PeH03oE2@dpg-d176femmcj7s73cr5fs0-a.oregon-postgres.render.com/chimigyeltshen
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3010:3010"
+    depends_on:
+      - backend
