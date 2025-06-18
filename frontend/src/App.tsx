@@ -55,37 +55,43 @@ const BMICalculator = () => {
     setMessage('');
   };
 
-  const saveBMI = async () => {
-    if (!bmi) {
-      setMessage('Calculate BMI first');
-      return;
-    }
+const saveBMI = async () => {
+  if (!bmi) {
+    setMessage('Calculate BMI first');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(`${BASE_URL}/api/create/bmi`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          height: parseFloat(height),
-          weight: parseFloat(weight),
-          age: age ? parseInt(age) : null
-        })
-      });
+  setLoading(true);
+  try {
+    const res = await fetch(`${BASE_URL}/api/create/bmi`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        height: parseFloat(height),
+        weight: parseFloat(weight),
+        age: age ? parseInt(age) : null
+      })
+    });
 
-      if (res.ok) {
-        setMessage('BMI saved successfully!');
-        clearForm();
-        if (activeTab === 'history') fetchBMIHistory();
-      } else {
-        setMessage('Failed to save BMI');
-      }
-    } catch (err) {
-      setMessage('Error saving BMI. Please try again.');
-    } finally {
-      setLoading(false);
+    if (res.ok) {
+      const successMsg = 'BMI saved successfully!';
+      setMessage(successMsg);
+      clearForm();
+      if (activeTab === 'history') fetchBMIHistory();
+      
+      // Clear the success message after 3 seconds
+      setTimeout(() => {
+        setMessage(prev => prev === successMsg ? '' : prev);
+      }, 3000);
+    } else {
+      setMessage('Failed to save BMI');
     }
-  };
+  } catch (err) {
+    setMessage('Error saving BMI. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const deleteBMI = async (id) => {
     if (!confirm('Delete this record?')) return;
@@ -520,4 +526,3 @@ const BMICalculator = () => {
 };
 
 export default BMICalculator;
-
