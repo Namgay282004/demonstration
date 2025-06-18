@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const BMICalculator = () => {
-  const BASE_URL = 'https://bmi-backend-dev-1.onrender.com';
+  const BASE_URL = 'https://bmi-backend-dev-2.onrender.com';
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [age, setAge] = useState('');
