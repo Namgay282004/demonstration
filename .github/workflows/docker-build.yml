@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/bmi-backend-dev
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/bmi-frontend-dev
   BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/bmi-backend-dev
   DOCKER_BUILDKIT: 1
 
