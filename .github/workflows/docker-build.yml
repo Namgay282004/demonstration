@@ -11,8 +11,8 @@ on:
       - develop
 
 env:
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pern-frontend
-  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pern-backend
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/bmi-backend-dev
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/bmi-backend-dev
   DOCKER_BUILDKIT: 1
 
 jobs:
